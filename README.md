@@ -6,15 +6,21 @@ Uses a Twilio phone number to relay SMS messages to and from your phone; since t
 
 ### Environment variables
 
-This project requires some environment variables to be set. To keep your tokens and secrets secure, make sure to not commit the `.env` file in git. When setting up the project with `twilio serverless:init ...` the Twilio CLI will create a `.gitignore` file that excludes `.env` from the version history.
+This project requires some environment variables to be set. To keep your tokens and secrets secure, make sure to not commit the `.env` file in git.
+
+Copy the `.env.default` to `.env`.
 
 In your `.env` file, set the following values:
 
 | Variable        | Description                                        | Required |
 | :-------------- | :------------------------------------------------- | :------- |
 | MY_PHONE_NUMBER | The phone number which SMS messages get relayed to | Yes      |
+| WEBHOOK_URL     | The Spectrum Labs API endpoint                     | Yes      |
+| SpectrumClientId| The Spectrum ClientID credential                   | Yes      |
+| SpectrumApiKey  | The Spectrum Api Key credential                    | Yes      |
 
-## Create a new project with the template
+
+## Create the project
 
 1. Install the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart#install-twilio-cli)
 2. Install the [serverless toolkit](https://www.twilio.com/docs/labs/serverless-toolkit/getting-started)
@@ -23,10 +29,10 @@ In your `.env` file, set the following values:
 twilio plugins:install @twilio-labs/plugin-serverless
 ```
 
-3. Initiate a new project
+3. Clone this project
 
 ```
-twilio serverless:init example --template=masked-number && cd example
+git clone https://github.com/aricday/sms-spectrum-moderation.git && cd sms-spectrum-moderation
 ```
 
 4. Start the server with the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart):
@@ -37,7 +43,6 @@ twilio serverless:start
 
 5. Open the web page at https://localhost:3000/index.html and enter your phone number to test
 
-ℹ️ Check the developer console and terminal for any errors, make sure you've set your environment variables.
 
 ## Deploying
 
