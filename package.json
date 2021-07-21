@@ -1,0 +1,6 @@
+{
+  "name": "masked-number",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}
