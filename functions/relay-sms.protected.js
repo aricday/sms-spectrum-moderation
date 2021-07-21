@@ -18,9 +18,11 @@ exports.handler = async function(context, event, callback) {
 
   if (event.From === context.MY_PHONE_NUMBER) {
     const separatorPosition = event.Body.indexOf(':');
+    console.log(separatorPosition);
 
     if (separatorPosition < 1) {
       twiml.message('You need to specify a recipient number and a ":" before the message. For example, "+12223334444: message".');
+      callback(null, twiml);
     } else {
       const recipientNumber = event.Body.substr(0, separatorPosition).trim();
       const messageBody = event.Body.substr(separatorPosition + 1).trim();
@@ -44,8 +46,8 @@ exports.handler = async function(context, event, callback) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Client-Id': context.SpectrumClientId,
-        'X-Api-Key': context.SpectrumApiKey
+        'X-Client-Id': context.SPECTRUM_CLIENT_ID,
+        'X-Api-Key': context.SPECTRUM_API_KEY
       },
       body: JSON.stringify(spectrumReq),
     });
