@@ -1,6 +1,6 @@
-# Masked Number
+# Masked Number w/ Content Moderation
 
-Uses a Twilio phone number to relay SMS messages to and from your phone; since the other party only sees your Twilio number, this effectively allows you to mask your phone number for privacy purposes.
+This privacy-conscious app uses a Twilio phone number to relay SMS messages to and from your phone, masking your phone number from public senders.  An integration with Spectrum Labs allows incoming messages to be subjected to abusive content filtering.  The Twilio phone number will relay SMS messages to and from your phone while filtering objectionable content and providing a masked phone number for privacy purposes.  Spectrum API analyzes message content for prohibited behaviors and returns a determination for the analyzed behaviors.
 
 ## Pre-requisites
 
