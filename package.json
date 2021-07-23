@@ -1,5 +1,5 @@
 {
-  "name": "masked-number",
+  "name": "spectrum-number",
   "dependencies": {
     "node-fetch": "^2.6.1"
   }

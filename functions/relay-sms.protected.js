@@ -9,16 +9,16 @@ exports.handler = async function(context, event, callback) {
             "id": event.MessageSid,
             "text": event.Body, 
             "attributes": {
-              "user-id": "a423jhdf6f",
-              "context-id": "b45796376dg",
-              "user-sign-up": "2020-02-15T15:14:27.987Z"
+              "user-id": event.From,
+              "media-url": event.MediaUrl0,
+              "user-sign-up": "2021-07-23T15:14:27.987Z"
             }
             }
           };
 
   if (event.From === context.MY_PHONE_NUMBER) {
     const separatorPosition = event.Body.indexOf(':');
-    console.log(separatorPosition);
+    // console.log(separatorPosition);
 
     if (separatorPosition < 1) {
       twiml.message('You need to specify a recipient number and a ":" before the message. For example, "+12223334444: message".');
@@ -39,6 +39,7 @@ exports.handler = async function(context, event, callback) {
       }
       catch (err) {
         twiml.message("There was an issue with the phone number you entered; please verify it is correct and try again.");
+        callback(null, twiml);
       }
     }
   } else {
