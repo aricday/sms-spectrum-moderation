@@ -72,6 +72,10 @@ typings/
 .env
 .env.test
 
+# my laptop stuff
+.twilio-functions
+.DS_Store
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
