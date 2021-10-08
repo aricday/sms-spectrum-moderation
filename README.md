@@ -1,4 +1,4 @@
-# Masked Number w/ Spectrum Labs.ai SMS Moderation
+# SMS Masking & Moderation w/ Spectrum Labs.ai
 
 This privacy app uses Twilio phone numbers to relay SMS messages to and from users phones, masking the actual phone number from all public senders.  An integration with Spectrum Labs API allows incoming messages to be subjected to abusive content alerting and filtering.  Spectrum Labs API engine analyzes message content for prohibited behaviors and returns a binary determination for the analyzed behaviors.
 
@@ -23,7 +23,7 @@ To get started with this project you will need the following:
 Before starting, make sure you have a Twilio account. Sign up here for free: www.twilio.com/try-twilio.  If you don't currently own a Twilio phone number with SMS functionality, you'll need to purchase one. Navigate to the Buy a Number page, choose the prefix you want to use under the “Search criteria” - “Search by digits or phrases” and click "Search."  You’ll then see a list of available phone numbers and their capabilities. Find a number that you like and click "Buy" to add it to your account.
 ![BUY NUMBER](images/buyNumber.png)
 
-In this solution, we will need to buy a unique number for each private number you want to forward calls.  Once you have a number, head to the ![Functions Section](https://www.twilio.com/console/functions/overview/services) of the Twilio Console. Create a new service, called spectrum-moderation. Twilio will add a random part to the subdomain to ensure the subdomain is unique.  Click the Next button.
+In this solution, we will need to buy a unique number for each private number you want to forward calls.  Once you have a number, head to the [Functions Section](https://www.twilio.com/console/functions/overview/services) of the Twilio Console. Create a new service, called spectrum-moderation. Twilio will add a random part to the subdomain to ensure the subdomain is unique.  Click the Next button.
 
 
 Create a new function with the path /sms-spectrum-filter.  Delete the placeholder code and paste the following code in the editor window.
@@ -187,7 +187,7 @@ exports.handler = async function(context, event, callback) {
   }
 };
 ```
-The code above adds an integration using node-fetch library to send the messasge body to the Spectrum LAbs API for content processing.  That's it!  Now you can test an incoming message with no objectionable content is delivered to the user handset.  If the message contains vulgarity or other configured behaviors the user will see a message that content was filtered and the behavior result triggered.
+The code above adds an integration using node-fetch library to send the messasge body to the Spectrum Labs API for content processing.  That's it!  Now you can test an incoming message with no objectionable content to be delivered directly to the user handset.  If the message if flagged to contain vulgarity or other configured behaviors the user will see a message that content was filtered and the behavior result triggered.
 
 ## Deploy From GitHub
 ### Pre-requisites
@@ -249,7 +249,7 @@ twilio serverless:start
 
 8. Configure Twilio to call your webhooks. 
 
-   You will need to configure Twilio to call your application when calls are received in your [*Twilio Number*](https://www.twilio.com/console/phone-numbers/incoming). The Voice URL should look something like this:
+   You will need to configure Twilio to call your application when calls are received in your [*Twilio Number*](https://www.twilio.com/console/phone-numbers/incoming). The Messaging URL should look something like this:
 
    ```
    https://0f72e8a8.ngrok.io/sms-spectrum-filter
