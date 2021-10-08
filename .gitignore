@@ -75,7 +75,7 @@ typings/
 # my laptop stuff
 .twilio-functions
 .DS_Store
-
+package-lock.json
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
