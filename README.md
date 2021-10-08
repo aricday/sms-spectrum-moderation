@@ -23,7 +23,7 @@ To get started with this project you will need the following:
 Before starting, make sure you have a Twilio account. Sign up here for free: www.twilio.com/try-twilio.  If you don't currently own a Twilio phone number with SMS functionality, you'll need to purchase one. Navigate to the Buy a Number page, choose the prefix you want to use under the “Search criteria” - “Search by digits or phrases” and click "Search."  You’ll then see a list of available phone numbers and their capabilities. Find a number that you like and click "Buy" to add it to your account.
 ![BUY NUMBER](images/buyNumber.png)
 
-In this solution, we will need to buy a unique number for each private number you want to forward calls.  Once you have a number, head to the !Functions Section](https://www.twilio.com/console/functions/overview/services) of the Twilio Console. Create a new service, called spectrum-moderation. Twilio will add a random part to the subdomain to ensure the subdomain is unique.  Click the Next button.
+In this solution, we will need to buy a unique number for each private number you want to forward calls.  Once you have a number, head to the ![Functions Section](https://www.twilio.com/console/functions/overview/services) of the Twilio Console. Create a new service, called spectrum-moderation. Twilio will add a random part to the subdomain to ensure the subdomain is unique.  Click the Next button.
 
 
 Create a new function with the path /sms-spectrum-filter.  Delete the placeholder code and paste the following code in the editor window.
