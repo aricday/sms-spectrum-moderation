@@ -10,7 +10,7 @@ Call masking and phone number anonymization is a common use case across various 
 
 One of the advantages of the Twilio cloud platform is the programmability it provides to core communication channels.  In this instance the ability to intercept an inbound sms, process the message body via api integration with Spectrum Labs for analysis, and process the Spectrum.ai response to forward the message unimpeded to user or block the incoming message and indicate sender of blocked content.  The diagram below illustrates an unwanted escalation from Bucky Badger for an upcoming game in Madison.  The Spectrum filter blocks the abusive content detected as shoen below.
 
-[Bad Bucky!](images/useCase.png)
+[Bad Bucky!](/images/useCase.png)
 
 ---
 
@@ -21,7 +21,7 @@ To get started with this project you will need the following:
 
 ### Create the App
 Before starting, make sure you have a Twilio account. Sign up here for free: www.twilio.com/try-twilio.  If you don't currently own a Twilio phone number with SMS functionality, you'll need to purchase one. Navigate to the Buy a Number page, choose the prefix you want to use under the “Search criteria” - “Search by digits or phrases” and click "Search."  You’ll then see a list of available phone numbers and their capabilities. Find a number that you like and click "Buy" to add it to your account.
-[BUY NUMBER](images/buyNumber.png)
+[BUY NUMBER](/images/buyNumber.png)
 
 In this solution, we will need to buy a unique number for each private number you want to forward calls.  Once you have a number, head to the Functions Section of the Twilio Console. Create a new service, called spectrum-moderation. Twilio will add a random part to the subdomain to ensure the subdomain is unique.  Click the Next button.
 
