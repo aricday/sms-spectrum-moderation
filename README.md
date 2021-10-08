@@ -15,9 +15,9 @@ One of the advantages of the Twilio cloud platform is the programmability it pro
 ---
 
 To get started with this project you will need the following:
-	- A Twilio account. Sign up for a [free trial account](https://www.twilio.com/try-twilio) and get a $10 credit.
-	- An SMS enabled Twilio Phone Number.
-	- [Spectrum Labs.ai account](https://www.spectrumlabsai.com/) and access credentials
+-   A Twilio account. Sign up for a [free trial account](https://www.twilio.com/try-twilio) and get a $10 credit.
+-   An SMS enabled Twilio Phone Number.
+-   [Spectrum Labs.ai account](https://www.spectrumlabsai.com/) and access credentials
 
 ### Create the App
 Before starting, make sure you have a Twilio account. Sign up here for free: www.twilio.com/try-twilio.  If you don't currently own a Twilio phone number with SMS functionality, you'll need to purchase one. Navigate to the Buy a Number page, choose the prefix you want to use under the “Search criteria” - “Search by digits or phrases” and click "Search."  You’ll then see a list of available phone numbers and their capabilities. Find a number that you like and click "Buy" to add it to your account.
@@ -25,7 +25,6 @@ Before starting, make sure you have a Twilio account. Sign up here for free: www
 
 In this solution, we will need to buy a unique number for each private number you want to forward calls.  Once you have a number, head to the Functions Section of the Twilio Console. Create a new service, called spectrum-moderation. Twilio will add a random part to the subdomain to ensure the subdomain is unique.  Click the Next button.
 
----
 
 Create a new function with the path /sms-spectrum-filter.  Delete the placeholder code and paste the following code in the editor window.
 ```
@@ -74,9 +73,9 @@ Now when an SMS comes in, the function will inspect {{From}} to determine if the
 ---
 
 On outbound message sending, this app masks your phone number for SMS messages by relaying them through a Twilio phone number. Follow the steps below to test your app:
-	1. Text your Twilio phone number with a recipient phone number.  For example, to send the message "hello" to the number "+12223334444", text your Twilio phone number using: +12223334444: hello
-	2. Your recipient should receive your message from your Twilio phone number.
-	3. When that recipient sends a reply to your Twilio phone number, it will be relayed to your personal phone number.
+1.  Text your Twilio phone number with a recipient phone number.  For example, to send the message "hello" to the number "+12223334444", text your Twilio phone number using: +12223334444: hello
+2.  Your recipient should receive your message from your Twilio phone number.
+3.  When that recipient sends a reply to your Twilio phone number, it will be relayed to your personal phone number.
 
 To try it out, ask a friend to send an SMS to your Twilio number and you should receive the message sent to that Twilio number on your own device set as MY_PHONE_NUMBER.  If the incoming sms is from MY_PHONE_NUMBER, the logic will extract the number to send from the message body preceding the colon “:” If the logic can’t process where to send “To” the user will see an error message:
 'You need to specify a recipient number and a ":" before the message. For example, "+12223334444: message".'
@@ -84,7 +83,110 @@ To try it out, ask a friend to send an SMS to your Twilio number and you should 
 Now we have the anonymous phone proxy setup to provide number masking for inbound sms messages.  We can also format outbound sms messages to send via the proxy Twilio number.  Now let’s integrate with content moderation provided by SpectrumLabs.ai.
 
 ## Configure Spectrum Credentials
+To integrate this number with Spectrum Labs.ai you will need the following:
+-   The Spectrum Labs URL
+-   The Spectrum X-Client-ID
+-   The Spectrum X-API-Key
 
+Use the values for Spectrum credentials to configure the following Envrionment Variables:
+| Variable          | Description                                        | Required |
+| :---------------- | :------------------------------------------------- | :------- |
+| MY_PHONE_NUMBER   | The phone number which SMS messages get relayed to | Yes      |
+| WEBHOOK_URL       | The Spectrum Labs API endpoint                     | Yes      |
+| SPECTRUM_CLIENT_ID| The Spectrum ClientID credential                   | Yes      |
+| SPECTRUM_API_KEY  | The Spectrum Api Key credential                    | Yes      |
+
+Add the following dependencies to the service:
+| Library           | Version |
+| :---------------- | :-------|
+| node-fetch        | ^2.6.1  |
+| moment-timezone   | 0.5.14  |
+
+
+Now we will replace the function at path /sms-spectrum-filter with the following code.
+```
+const fetch = require('node-fetch');
+var moment = require('moment-timezone');
+
+exports.handler = async function(context, event, callback) {
+  const client = context.getTwilioClient();
+  const twiml = new Twilio.twiml.MessagingResponse();
+
+  // timezone default to CST
+  let timezone = event.timezone || 'America/Chicago';
+  const messageTime = moment().tz(timezone).format();
+  
+  // Initialize the Spectrum Labs.ai message body for inspection
+  let spectrumReq = { 
+          "timestamp": messageTime,
+          "category": "sms",
+          "content": {
+            "id": event.MessageSid,
+            "text": event.Body, 
+            "attributes": {
+              "user-id": event.From,
+              "media-url": event.MediaUrl0,
+              "region": event.FromCity + ", " + event.FromState
+            }
+            }
+          };
+  
+  if (event.From === context.MY_PHONE_NUMBER) {
+    const separatorPosition = event.Body.indexOf(':');
+    // console.log(separatorPosition);
+    
+    if (separatorPosition < 1) {
+      twiml.message('You need to specify a recipient number and a ":" before the message. For example, "+12223334444: message".');
+      callback(null, twiml);
+    } else {
+      const recipientNumber = event.Body.substr(0, separatorPosition).trim();
+      const messageBody = event.Body.substr(separatorPosition + 1).trim();
+
+      try {
+        await client.messages
+                    .create({
+                      to: recipientNumber,
+                      from: event.To,
+                      body: messageBody
+                    });
+
+        return callback(null);
+      }
+      catch (err) {
+        twiml.message("There was an issue with the phone number you entered; please verify it is correct and try again.");
+        callback(null, twiml);
+      }
+    }
+  } else {
+    const res = await fetch(context.WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Client-Id': context.SPECTRUM_CLIENT_ID,
+        'X-Api-Key': context.SPECTRUM_API_KEY
+      },
+      body: JSON.stringify(spectrumReq),
+    });
+    
+    let data = await res.json();
+    let stringData = JSON.stringify(data.behaviors);
+    const violationIndex = stringData.indexOf('true');
+    // console.log(violationIndex);
+    // console.log(data.behaviors);
+    // console.log(messageTime);
+
+    if (violationIndex == -1) {
+      twiml.message({ to: context.MY_PHONE_NUMBER }, `${event.From}: ${event.Body}`);
+      callback(null, twiml);
+    }
+    else {
+      twiml.message({ to: context.MY_PHONE_NUMBER }, `This SMS from ${event.From} was blocked for ${stringData}`);
+      callback(null, twiml);
+    }
+  }
+};
+```
+The code above adds an integration using node-fetch library to send the messasge body to the Spectrum LAbs API for content processing.  That's it!  Now you can test an incoming message with no objectionable content is delivered to the user handset.  If the message contains vulgarity or other configured behaviors the user will see a message that content was filtered and the behavior result triggered.
 
 ## Deploy From GitHub
 ### Pre-requisites
