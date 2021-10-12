@@ -1,6 +1,8 @@
-# SMS Masking & Moderation w/ Spectrum Labs.ai
+# SMS Masking & Moderation w/ Spectrum Labs AI
 
-This privacy app uses Twilio phone numbers to relay SMS messages to and from users phones, masking the actual phone number from all public senders.  An integration with Spectrum Labs API allows incoming messages to be subjected to abusive content alerting and filtering.  Spectrum Labs API engine analyzes message content for prohibited behaviors and returns a binary determination for the analyzed behaviors.
+This privacy app uses Twilio phone numbers to relay SMS messages to and from users phones, masking the actual phone number from all public senders.  An integration with Spectrum Labs API allows incoming messages to be subjected to abusive content alerting and filtering.  Spectrum Labs AI engine analyzes message content for prohibited behaviors and returns a binary determination for the analyzed behaviors.
+
+Spectrum Labs has built algorithms and a set of APIs that can be used to moderate, flag and block profiles of toxic behavior.  In a few lines of code, Twilio users can integrate with Spectrum Labs to prevent messaging harassment, hate speech, scams, profanity, radicalization and other profiles, in English as well as multiple other languages.
 
 ## PROJECT SET UP
 
@@ -83,13 +85,13 @@ If the logic can’t process where to send "To" the user will see an error messa
 
 We have an anonymous phone proxy setup to provide number masking for inbound sms messages.  We can format outbound sms messages to also send outbound via the proxy Twilio number.  Now let’s integrate with content moderation provided by SpectrumLabs.ai.
 
-## Configure Spectrum Credentials
-To integrate this number with Spectrum Labs.ai you will need the following:
+## Configure Spectrum Labs API Credentials
+To integrate this number with Spectrum Labs APIs you will need the following:
 -   The Spectrum Labs API
 -   The Spectrum X-Client-ID
 -   The Spectrum X-API-Key
 
-Use the values for Spectrum credentials to configure the following Envrionment Variables:
+Use the values for Spectrum API credentials to configure the following Envrionment Variables:
 | Variable          | Description                                        | Required |
 | :---------------- | :------------------------------------------------- | :------- |
 | MY_PHONE_NUMBER   | The phone number which SMS messages get relayed to | Yes      |
