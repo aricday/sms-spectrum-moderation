@@ -1,16 +1,16 @@
-# SMS Masking & Moderation w/ Spectrum Labs AI
+# SMS Masking & Moderation w/ Spectrum Labs
 
-This privacy app uses Twilio phone numbers to relay SMS messages to and from users phones, masking the actual phone number from all public senders.  An integration with Spectrum Labs API allows incoming messages to be subjected to abusive content alerting and filtering.  Spectrum Labs AI engine analyzes message content for prohibited behaviors and returns a binary determination for the analyzed behaviors.
+This privacy app uses Twilio phone numbers to relay SMS messages to and from users phones, masking the actual phone number from all public senders.  An integration with Spectrum Labs API allows incoming messages to be subjected to abusive content alerting and moderation.  Spectrum Labs AI engine analyzes message content for prohibited behaviors and returns a binary determination for the analyzed profiles.
 
-Spectrum Labs has built algorithms and a set of APIs that can be used to moderate, flag and block profiles of toxic behavior.  In a few lines of code, Twilio users can integrate with Spectrum Labs to prevent messaging harassment, hate speech, scams, profanity, radicalization and other profiles, in English as well as multiple other languages.
+Spectrum Labs helps social platforms deliver on their brand promises, drive platform improvements and create exponential impact with technology that detects disruptive behaviors in text and audio. In a few lines of code, Twilio users can integrate with Spectrum Labs and prevent messaging harassment, hate speech, scams, profanity, radicalization and other harmful behaviors, leaving room for positive engagement.
 
 ## PROJECT SET UP
 
-Call masking and phone number anonymization is a common use case across various industries.  A proxy number is a cloud enabled feature that connects conversation parties without revealing their real phone numbers.  Some people in public roles are required to publish public contact information for receiving community communications.  In some instances, communications may contain unwanted or abusive content, drug references, vulgarity and other objectionable messaging.  This blog will walk you through how to utilize Twilio to create an anonymous SMS proxy to inspect message bodies for abusive content and filter inbound sms based on results returned from Spectrum Labs AI api.  This tutorial shows you how to create an integration with Spectrum Labs API from a Twilio serverless function to mask the actual user’s number and filter content to user’s personal sms device.  This blog builds on the ideas of the application here: [SMS Forwarding and Responding](https://www.twilio.com/blog/sms-forwarding-and-responding-using-twilio-and-javascript)
+Call masking and phone number anonymization is a common use case across various industries.  A proxy number is a cloud enabled feature that connects conversation parties without revealing their real phone numbers.  Some people in public roles are required to publish public contact information for receiving community communications.  In some instances, communications may contain unwanted or abusive content, drug references, vulgarity and other objectionable messaging.  This blog will walk you through how to utilize Twilio to create an anonymous SMS proxy to inspect message bodies for abusive content and remove inbound sms communications based on results returned from Spectrum Labs API.  This tutorial shows you how to create an integration with Spectrum Labs API from a Twilio serverless function to mask the actual user’s number and filter content to user’s personal sms device.  This blog builds on the ideas of the application here: [SMS Forwarding and Responding](https://www.twilio.com/blog/sms-forwarding-and-responding-using-twilio-and-javascript)
 
 ---
 
-One of the advantages of the Twilio cloud platform is the programmability it provides to core communication channels.  In this instance the ability to intercept an inbound sms, process the message body via api integration with Spectrum Labs for analysis, and process the Spectrum.ai response to forward the message unimpeded to user or block the incoming message and indicate sender of blocked content.  The diagram below illustrates an unwanted escalation from Bucky Badger for an upcoming game in Madison.  The Spectrum filter blocks the abusive content detected as shown below.  Bucky starts sending abusive and profane messages which are blocked for Goldy.  In this example we are triggering the results based on a Profanity Behavior return from Spectrum Labs.
+One of the advantages of the Twilio cloud platform is the programmability it provides to core communication channels.  In this instance the ability to intercept an inbound sms, process the message body via api integration with Spectrum Labs for analysis, and process the Spectrum response to forward the message unimpeded to user or block the incoming message and indicate sender of blocked content.  The diagram below illustrates an unwanted escalation from Bucky Badger for an upcoming game in Madison.  The Spectrum profile analysis removes the abusive content detected as shown below.  Bucky starts sending abusive and profane messages which are blocked for Goldy.  In this example we are triggering the results based on a Profanity Behavior return from Spectrum Labs.
 
 ![Bad Bucky!](images/useCase.png)
 
@@ -19,7 +19,7 @@ One of the advantages of the Twilio cloud platform is the programmability it pro
 To get started with this project you will need the following:
 -   A Twilio account. Sign up for a [free trial account](https://www.twilio.com/try-twilio) and get free test credit.
 -   An SMS enabled Twilio Phone Number.
--   [Spectrum Labs.ai account](https://www.spectrumlabsai.com/) and access credentials
+-   [Spectrum Labs account](https://www.spectrumlabsai.com/) and access credentials
 
 ### Create the SMS Masking App
 Before starting, make sure you have a Twilio account. Sign up here for free: www.twilio.com/try-twilio.  If you don't currently own a Twilio phone number with SMS functionality, you'll need to purchase one. Navigate to the Buy a Number page, choose the prefix you want to use under the “Search criteria” - “Search by digits or phrases” and click "Search."  You’ll then see a list of available phone numbers and their capabilities. Find a number that you like and click "Buy" to add it to your account.
@@ -28,7 +28,7 @@ Before starting, make sure you have a Twilio account. Sign up here for free: www
 In this solution, we will need to buy a unique number for each private number you want to forward calls.  Once you have a number, head to the [Functions Section](https://www.twilio.com/console/functions/overview/services) of the Twilio Console. Create a new service, called spectrum-moderation. Twilio will add a random part to the subdomain to ensure the subdomain is unique.  Click the Next button.
 
 
-Create a new function with the path /sms-spectrum-filter.  Delete the placeholder code and paste the following code in the editor window.
+Create a new function with the path /sms-spectrum-moderation.  Delete the placeholder code and paste the following code in the editor window.
 ```
 exports.handler = async function(context, event, callback) {
   const client = context.getTwilioClient();
@@ -83,7 +83,7 @@ To try it out, ask a friend to send an SMS to your Twilio number and you should 
 If the logic can’t process where to send "To" the user will see an error message:
 *'You need to specify a recipient number and a ":" before the message. For example, "+12223334444: message".'*
 
-We have an anonymous phone proxy setup to provide number masking for inbound sms messages.  We can format outbound sms messages to also send outbound via the proxy Twilio number.  Now let’s integrate with content moderation provided by SpectrumLabs.ai.
+We have an anonymous phone proxy setup to provide number masking for inbound sms messages.  We can format outbound sms messages to also send outbound via the proxy Twilio number.  Now let’s integrate with content moderation provided by Spectrum Labs.
 
 ## Configure Spectrum Labs API Credentials
 To integrate this number with Spectrum Labs APIs you will need the following:
@@ -254,7 +254,7 @@ twilio serverless:start
    You will need to configure Twilio to call your application when calls are received in your [*Twilio Number*](https://www.twilio.com/console/phone-numbers/incoming). The Messaging URL should look something like this:
 
    ```
-   https://0f72e8a8.ngrok.io/sms-spectrum-filter
+   https://0f72e8a8.ngrok.io/sms-spectrum-moderation
    ```
 
 ### Deploying
