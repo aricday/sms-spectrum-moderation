@@ -1,4 +1,4 @@
-const relaySms = require('../functions/sms-spectrum-filter.protected').handler;
+const relaySms = require('../functions/sms-spectrum-moderation.protected').handler;
 const helpers = require('../../test/test-helper');
 
 let shouldFail = false;
