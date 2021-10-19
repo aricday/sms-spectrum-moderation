@@ -76,6 +76,9 @@ typings/
 .twilio-functions
 .DS_Store
 package-lock.json
+.twiliodeployinfo
+.twilioserverlessrc
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
