@@ -9,7 +9,7 @@ exports.handler = async function(context, event, callback) {
   let timezone = event.timezone || 'America/Chicago';
   const messageTime = moment().tz(timezone).format();
   
-  // Initialize the Spectrum Labs.ai message body for inspection
+  // Initialize the Spectrum Labs API request message body for inspection
   let spectrumReq = { 
           "timestamp": messageTime,
           "category": "sms",
@@ -66,7 +66,6 @@ exports.handler = async function(context, event, callback) {
     const violationIndex = stringData.indexOf('true');
     // console.log(violationIndex);
     // console.log(data.behaviors);
-    // console.log(messageTime);
 
     if (violationIndex == -1) {
       twiml.message({ to: context.MY_PHONE_NUMBER }, `${event.From}: ${event.Body}`);
