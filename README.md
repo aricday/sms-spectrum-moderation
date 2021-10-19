@@ -6,7 +6,7 @@ Spectrum Labs helps social platforms deliver on their brand promises, drive plat
 
 ## PROJECT SET UP
 
-Call masking and phone number anonymization is a common use case across various industries.  A proxy number is a cloud enabled feature that connects conversation parties without revealing their real phone numbers.  Some people in public roles are required to publish public contact information for receiving community communications.  In some instances, communications may contain unwanted or abusive content, drug references, vulgarity and other objectionable messaging.  This blog will walk you through how to utilize Twilio to create an anonymous SMS proxy to inspect message bodies for abusive content and remove inbound sms communications based on results returned from Spectrum Labs API.  This tutorial shows you how to create an integration with Spectrum Labs API from a Twilio serverless function to mask the actual user’s number and filter content to user’s personal sms device.  This blog builds on the ideas of the application here: [SMS Forwarding and Responding](https://www.twilio.com/blog/sms-forwarding-and-responding-using-twilio-and-javascript)
+Call masking and phone number anonymization is a common use case across various industries.  A proxy number is a cloud enabled feature that connects conversation parties without revealing their real phone numbers.  Some people in public roles are required to publish public contact information for receiving community communications.  In some instances, communications may contain unwanted or abusive content, drug references, vulgarity and other objectionable messaging.  This blog will walk you through how to utilize Twilio to create an anonymous SMS proxy to inspect message bodies for abusive content and remove inbound sms communications based on results returned from Spectrum Labs API.  This tutorial shows you how to create an integration with Spectrum Labs API from a Twilio serverless function to mask the actual user’s number and moderate content to user’s personal sms device.  This blog builds on the ideas of the application here: [SMS Forwarding and Responding](https://www.twilio.com/blog/sms-forwarding-and-responding-using-twilio-and-javascript)
 
 ---
 
@@ -106,7 +106,7 @@ Add the following dependencies to the service:
 | moment-timezone   | 0.5.14  |
 
 
-Now we will replace the function at path /sms-spectrum-filter with the following code.
+Now we will replace the function at path /sms-spectrum-moderation with the following code.
 ```
 const fetch = require('node-fetch');
 var moment = require('moment-timezone');
@@ -189,7 +189,7 @@ exports.handler = async function(context, event, callback) {
   }
 };
 ```
-The code above adds an integration using node-fetch library to send the messasge body to the Spectrum Labs API for content processing.  That's it!  Now you can test an incoming message with no objectionable content to be delivered directly to the user handset.  If the message if flagged to contain vulgarity or other configured behaviors the user will see a message that content was filtered and the behavior result triggered.
+The code above adds an integration using node-fetch library to send the messasge body to the Spectrum Labs API for content processing.  That's it!  Now you can test an incoming message with no objectionable content to be delivered directly to the user handset.  If the message is flagged to contain vulgarity or other configured behaviors, the user will see a message that unwanted content was detected and the behavior flagged.
 
 ## Deploy From GitHub
 ### Pre-requisites
